@@ -17,7 +17,7 @@ Multi agent/Agentic AI study guide using langgraph
 
     Return the result in clean Markdown.
 
-## II. Simple Python Version - study_guide_v1.py.
+## II. Simple Python Version Using Langchain - study_guide_v1.py.
 
     The plain Python version uses three focused LLM calls or agents (planner, teacher, and quiz writer) coordinated by regular Python code .
 
