@@ -1,10 +1,10 @@
 # AI_study_guide
-Multi agent/Agentic AI study guide using langgraph
+Multi agent Study Guide using langchain, langgraph and AI models hosted locally on Ollama/LM Studio or any OpenAI-compatible server.
 
 ## Quick Start
 
 ### Prerequisites
-- Python 3.10+
+- Python 3.12
 - A local LLM endpoint. The scripts default to one of:
   - **Ollama** (used by `langchain/study_guide_v1.py`) — start with `ollama serve` and pull a model, e.g. `ollama pull gemma4:e4b`
   - **LM Studio** or any OpenAI-compatible server (used by `study_guide.py`) — running on `http://localhost:1234/v1`
