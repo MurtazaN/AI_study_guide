@@ -1,6 +1,49 @@
 # AI_study_guide
 Multi agent/Agentic AI study guide using langgraph
 
+## Quick Start
+
+### Prerequisites
+- Python 3.10+
+- A local LLM endpoint. The scripts default to one of:
+  - **Ollama** (used by `langchain/study_guide_v1.py`) — start with `ollama serve` and pull a model, e.g. `ollama pull gemma4:e4b`
+  - **LM Studio** or any OpenAI-compatible server (used by `study_guide.py`) — running on `http://localhost:1234/v1`
+
+### Create a virtual environment (optional but recommended)
+```bash
+uv venv --python3.12
+
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+```
+### Install dependencies
+```bash
+uv pip install langchain langchain-openai langchain-ollama langgraph
+```
+
+### Run a study guide
+```bash
+# 1. Plain Python + Langchain version (planner -> teacher -> quiz)
+python langchain/study_guide_v1.py
+
+# 2. LangGraph version (same flow as a graph)
+python study_guide.py
+```
+
+### Switch the model
+Edit the `MODEL = ...` block at the top of either script:
+- `langchain/study_guide_v1.py` uses `ChatOllama` — change the `model` name to any model you've pulled with Ollama.
+- `study_guide.py` uses `ChatOpenAI` pointed at a local server — change `base_url`, `api_key`, and `model` to match your OpenAI-compatible endpoint (LM Studio, llama.cpp server, vLLM, etc.).
+
+### What you'll see
+Each script prints progress as it runs the three specialists in sequence:
+```
+Calling agent planner_agent...
+Finished planner_agent in 2.3s
+Calling agent teacher_agent...
+...
+```
+and then prints the final study guide (outline, notes, and 3 review questions) for the topic defined in the script.
+
 ## I. Create a beginner-friendly study guide for this topic:
 
 The output should have exactly these sections:
