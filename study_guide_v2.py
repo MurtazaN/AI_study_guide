@@ -2,10 +2,18 @@ from typing import TypedDict
 import time
 
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
 
 # Local Ollama model used by all nodes.
-MODEL = ChatOllama(model="gemma4:e4b", temperature=0)
+# MODEL = ChatOllama(model="gemma4:e4b", temperature=0)
+
+MODEL = ChatOpenAI(
+    base_url="http://localhost:1234/v1",
+    api_key="not-needed",
+    model="microsoft/phi-4-mini-reasoning", 
+    temperature=0.7
+)
 
 
 # Shared state passed between nodes.
