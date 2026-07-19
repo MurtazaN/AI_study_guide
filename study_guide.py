@@ -17,6 +17,7 @@ MODEL = ChatOpenAI(
 
 
 # Shared state passed between nodes.
+# A kind of "schema" or "blueprint" for the data that will flow between nodes.
 class StudyState(TypedDict):
     topic: str
     outline: str
@@ -25,6 +26,9 @@ class StudyState(TypedDict):
 
 
 def ask(system: str, user: str) -> str:
+    ''' The system role is meant for behavioral instructions (e.g., "You are a helpful assistant. Be concise.").
+        The user role is meant for questions or tasks.
+    '''
     response = MODEL.invoke([
         {"role": "system", "content": system},
         {"role": "user", "content": user},
@@ -74,19 +78,21 @@ def quiz_writer(state: StudyState) -> dict:
 
 
 def build_graph():
+    # 1. Create empty graph bound to StudyState schema
     graph = StateGraph(StudyState)
 
-    # Add the nodes
+    # 2. Register each node with a string name (the label) and the function (the worker)
     graph.add_node("planner", planner)
     graph.add_node("teacher", teacher)
     graph.add_node("quiz_writer", quiz_writer)
 
-    # Define the order of execution
+    # 3. Define the flow/order of execution i.e edges to define execution order
     graph.add_edge(START, "planner")
     graph.add_edge("planner", "teacher")
     graph.add_edge("teacher", "quiz_writer")
     graph.add_edge("quiz_writer", END)
 
+    # 4. Compile the graph into an executable/runnable app
     return graph.compile()
 
 def save_study_guide(content: str, topic: str) -> str:
@@ -97,19 +103,26 @@ def save_study_guide(content: str, topic: str) -> str:
 
 if __name__ == "__main__":
     print("Warming up model...")
+    # Warm Up the Model
     MODEL.invoke("Say ready.")
     print("Model ready.\n")
 
+    # Compiles the graph into an executable app. Done once, reused for every topic.
     app = build_graph()
+
+    # Ask the user for a study topic
     topic = input("Enter a study topic: ").strip()
 
+    # Initialize the state for the graph and invoke the app with the topic.
     result = app.invoke({
         "topic": topic,
         "outline": "",
         "notes": "",
         "quiz": "",
     })
+    # The result dict contains the final values of outline, notes, and quiz - all populated by the graph run
 
+    # Format the study guide content into Markdown
     content = (
         f"# Study Guide: {topic}\n\n"
         f"## Outline\n{result['outline']}\n\n"
@@ -117,5 +130,6 @@ if __name__ == "__main__":
         f"## Review Questions\n{result['quiz']}\n"
     )
 
+    # Save the study guide to a Markdown file
     filename = save_study_guide(content, topic)
     print(f"Study guide saved to {filename}")
