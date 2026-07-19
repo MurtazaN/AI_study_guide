@@ -63,6 +63,13 @@ def build_study_guide(topic: str) -> str:
         f"## Review Questions\n{quiz}\n"
     )
 
+def save_study_guide(content: str, topic: str) -> str:
+    """Save the study guide content to a file."""
+    filename = f"study_guide_{topic.replace(' ', '_')}.md"
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(content)
+    return filename
+
 
 if __name__ == "__main__":
     print("Warming up model...")
@@ -70,4 +77,8 @@ if __name__ == "__main__":
     print("Model ready.\n")
 
     topic = input("Enter a study topic: ").strip()
-    print("\n" + build_study_guide(topic))
+    # print("\n" + build_study_guide(topic))
+    study_guide_content = build_study_guide(topic)
+    filename = save_study_guide(study_guide_content, topic)
+    
+    print(f"Study guide saved to {filename}")
